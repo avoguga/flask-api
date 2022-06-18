@@ -4,9 +4,9 @@ from flask import Flask, request, jsonify, send_from_directory
 
 DIRETORIO = "/home/gus/Downloads/doeal/output"
 
-api = Flask(__name__)
+app = Flask(__name__)
 
-@api.route("/arquivos", methods=["GET"])
+@app.route("/arquivos", methods=["GET"])
 def lista_arquivos():
     arquivos = []
 
@@ -19,7 +19,7 @@ def lista_arquivos():
     return jsonify(arquivos)
 
 
-@api.route("/arquivos", methods=["POST"])
+@app.route("/arquivos", methods=["POST"])
 def post_arquivo():
     arquivo = request.files.get("files")
 
@@ -29,10 +29,10 @@ def post_arquivo():
 
     return '', 201
 
-@api.route('/')
+@app.route('/')
 def index():
     return "<h1>A rota para dar POST ou GET é a rota /arquivos!</h1>"
 
 
 if __name__ == "__main__":
-    api.run(debug=True, port=8000)
+    app.run(debug=True, port=8000)
