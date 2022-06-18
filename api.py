@@ -29,6 +29,10 @@ def post_arquivo():
 
     return '', 201
 
+@api.route('/')
+def index():
+    return "<h1>A rota para dar POST ou GET é a rota /arquivos!</h1>"
+
 
 if __name__ == "__main__":
     api.run(debug=True, port=8000)
