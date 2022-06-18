@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, request, jsonify, send_from_directory
 
-DIRETORIO = "/home/gus/Downloads/doeal/output"
+DIRETORIO = "/output"
 
 app = Flask(__name__)
 
