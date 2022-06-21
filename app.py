@@ -1,12 +1,15 @@
+import random
 import os
+import cloudinary
+from cloudinary.uploader import upload
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 
-DIRETORIO = "/output"
+DIRETORIO = "/home/gus/Downloads/doeal/output"
 
-app = Flask(__name__)
+api = Flask(__name__)
 
-@app.route("/arquivos", methods=["GET"])
+@api.route("/arquivos", methods=["GET"])
 def lista_arquivos():
     arquivos = []
 
@@ -18,21 +21,24 @@ def lista_arquivos():
 
     return jsonify(arquivos)
 
+@api.route("/upload/arquivo", methods=['POST'])
+def upload_file():
+  api.logger.info('in upload route')
 
-@app.route("/arquivos", methods=["POST"])
-def post_arquivo():
-    arquivo = request.files.get("files")
+  cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
+    api_secret=os.getenv('API_SECRET'))
+  upload_result = None
+  if request.method == 'POST':
+    file_to_upload = request.files['file']
+    api.logger.info('%s file_to_upload', file_to_upload)
+    if file_to_upload:
+      upload_result = upload(file_to_upload)
+      api.logger.info(upload_result)
+      return jsonify(upload_result)
 
-    print(arquivo)
-    nome_do_arquivo = arquivo.filename
-    arquivo.save(os.path.join(DIRETORIO, nome_do_arquivo))
-
-    return '', 201
-
-@app.route('/')
+@api.route('/')
 def index():
-    return "<h1>A rota para dar POST ou GET é a rota /arquivos!</h1>"
-
+    return "<h1>A rota para dar POST é /upload/arquivo! <br/> <br/> Para dar GET use a rota /arquivos!</h1>"
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    api.run(debug=True, port=8000)
