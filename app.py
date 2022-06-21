@@ -1,6 +1,7 @@
 import random
 import os
 import cloudinary
+from cloudinary.api import resources
 from cloudinary.uploader import upload
 
 from flask import Flask, request, jsonify, send_from_directory, render_template
@@ -11,15 +12,10 @@ api = Flask(__name__)
 
 @api.route("/arquivos", methods=["GET"])
 def lista_arquivos():
-    arquivos = []
-
-    for nome_do_arquivo in os.listdir(DIRETORIO):
-        endereco_do_arquivo = os.path.join(DIRETORIO, nome_do_arquivo)
-
-        if(os.path.isfile(endereco_do_arquivo)):
-            arquivos.append(nome_do_arquivo)
-
-    return jsonify(arquivos)
+    cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
+      api_secret=os.getenv('API_SECRET'))
+    result = resources()
+    return jsonify(result)
 
 @api.route("/upload/arquivo", methods=['POST'])
 def upload_file():
